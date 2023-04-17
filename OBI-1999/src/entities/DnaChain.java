@@ -1,73 +1,102 @@
 package  entities;
-public class DnaChain {
-    private String totalChain;
-    private String directChain;
-    private String indirectChain;
-    private int directOcurrency;
-    private int indirectOcurrency;
 
-    public DnaChain(String totalChain, String directChain){
-        this.totalChain = totalChain.toUpperCase();
-        this.directChain = directChain.toUpperCase();
-        setIndirectChain(directChain);
+import java.util.ArrayList;
+
+public class DnaChain {
+    private ArrayList<String> totalChain;
+    private ArrayList<String> directChain;
+    private ArrayList<String> indirectChain;
+    private ArrayList<Integer> directOcurrency;
+    private ArrayList<Integer> indirectOcurrency;
+
+    public DnaChain(ArrayList<String> totalChain, ArrayList<String> directChain){
+        this.totalChain = new ArrayList<String>(totalChain);
+        this.directChain = new ArrayList<String>(directChain);
+        this.indirectChain=new ArrayList<>();
+        this.directOcurrency = new ArrayList<>();
+        this.indirectOcurrency=new ArrayList<>();
+
+
+        setIndirectChain();
         setDirectOcurrency();
         setIndirectOcurrency();
+
     }
 
-    public void setIndirectChain(String directChain) {
-        String [] temp = directChain.split("");
-        for(int i = 0;i< temp.length;i++){
-            switch (temp[i]){
-
-                case "T"->temp[i] = "A";
-                case "A"->temp[i] = "T";
-                case "C"->temp[i] = "G";
-                case "G"->temp[i] = "C";
-
-            }
-
-        }
-        for(int i =0; i< temp.length;i++){
-         if(indirectChain!=null) {
-             indirectChain = temp[i] + indirectChain;
-         }
-         else{
-             indirectChain = temp[i];
-         }
-        }
-    }
-
-    public String getDirectChain() {
-        return directChain;
-    }
-
-    public String getIndirectChain() {
-        return indirectChain;
-    }
-
-    public String getTotalChain() {
+    public ArrayList<String> getTotalChain() {
         return totalChain;
     }
 
-    public void setDirectOcurrency() {
-        int index = getTotalChain().indexOf(getDirectChain());
-        while(index>=0){
-            this.directOcurrency++;
-            index = getTotalChain().indexOf(getDirectChain(), index + 1);
+
+
+    public ArrayList<String> getDirectChain() {
+        return directChain;
+    }
+
+
+
+    public ArrayList<String> getIndirectChain() {
+        return indirectChain;
+    }
+
+    public void setIndirectChain() {
+        for (int i = 0; i<getDirectChain().size();i++){
+            String temp="";
+        for(int j =0; j<getDirectChain().get(i).length();j++){
+            String character = String.valueOf(getDirectChain().get(i).charAt(j));
+            switch (character){
+                case "A"->character="T";
+                case "T"->character="A";
+                case "C"->character="G";
+                case "G"->character="C";
+            }
+            temp = character+temp;
+        }
+        this.indirectChain.add(temp);
         }
     }
-public void setIndirectOcurrency(){
-    int index = getTotalChain().indexOf(getIndirectChain());
-    while(index>=0){
-        this.indirectOcurrency++;
-        index = getTotalChain().indexOf(getIndirectChain(), index + 1);
-    }
-}
-    public int getDirectOcurrency() {
+
+    public ArrayList<Integer> getDirectOcurrency() {
         return directOcurrency;
     }
 
-    public int getIndirectOcurrency() {
+    public void setDirectOcurrency() {
+        for (int i = 0; i < getTotalChain().size(); i++) {
+            String directChain = getDirectChain().get(i);
+            String totalChain = getTotalChain().get(i);
+            int count = 0;
+            int index = totalChain.indexOf(directChain);
+            while (index >= 0) {
+                count++;
+                index = totalChain.indexOf(directChain, index + directChain.length());
+            }
+            if (i < directOcurrency.size()) {
+                directOcurrency.set(i, count);
+            } else {
+                directOcurrency.add(count);
+            }
+        }
+    }
+
+    public ArrayList<Integer> getIndirectOcurrency() {
         return indirectOcurrency;
+    }
+
+    public void setIndirectOcurrency() {
+        for (int i = 0; i < getTotalChain().size(); i++) {
+            String indirectChain = getIndirectChain().get(i);
+            String totalChain = getTotalChain().get(i);
+            int count = 0;
+            int index = totalChain.indexOf(indirectChain);
+            while (index >= 0) {
+                count++;
+                index = totalChain.indexOf(indirectChain, index + indirectChain.length());
+            }
+            if (i < indirectOcurrency.size()) {
+                indirectOcurrency.set(i, count);
+            } else {
+                indirectOcurrency.add(count);
+            }
+        }
     }
 }
